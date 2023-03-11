@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 30vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,10 +28,56 @@
   color: #61dafb;
 }
 
+.Main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Quote-block {
+  width: 300px;
+  height: 250px;
+  margin: 20px;
+  position: relative;
+}
+
+.Quote {
+  max-width: 200px;
+  max-height: 210px;
+  width: 100%;
+  background-color: rgba(228, 233, 244, 0.8);
+  padding: 20px;
+}
+
+.Quote-text {
+  margin: 0 0 10px 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.Button {
+  margin: 5px;
+}
+
+.Radio-buttons {
+  margin: 5px;
+}
+
+.Center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
