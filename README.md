@@ -1,9 +1,28 @@
-# Mood-Board-Generator
+# Mood Board Generator
 
-This is a React website to create a mood board consisting of famous quotes displayed over aesthetic images and colors. The quotes are provided by the [Type.fit API](https://type.fit/api/quotes), and the images are fetched from the [Unsplash API](https://unsplash.com/developers).
+This is a React web app to create a mood board consisting of famous quotes displayed over aesthetic images and colors. The quotes are provided by the [Type.fit API](https://type.fit/api/quotes), and the images are fetched from the [Unsplash API](https://unsplash.com/developers).
 
-As of now, the website is in its early stages. The current code simply allows the user to request a new quote and a new background image or color.
+As of now, the app is in its early stages. The current code simply allows the user to request a new quote and a new background image or color.
+
+## Setup
 
 An Unsplash API key is required. In the future, this key will be hidden with Netlify functions, but for now the key is stored in an untracked `src/config.js` file:
 
     export const unsplashKey = "your_key_here";
+
+## Features
+
+### Currently implemented
+
+- A new random quote can be requested until a desired one is found.
+- A quote can have an image or a solid color as a backdrop. The user selects which type of background to generate for each quote.
+- A new random image or color can be requested until a desired one is found.
+
+### Not yet implemented
+
+- A mood board consists of multiple quotes displayed in a grid.
+- The currently selected quote and backdrop combination, called a card, can be added to the mood board.
+- A mood board can have up to nine cards, in a 3x3 grid.
+- Quote cards in the mood board can be dragged to change their order.
+- Quote cards can be selected and removed from the mood board.
+- The mood board can be downloaded as an image file.
