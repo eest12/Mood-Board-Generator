@@ -23,6 +23,12 @@ function fetchImage(setImage, setError) {
     .then(setImage)
 }
 
+function addQuote(quote, background, quoteList, setQuoteList) {
+  console.log(quoteList);
+  const newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, background: background });
+  setQuoteList(newQuoteList);
+}
+
 function Quote({ quotes, quoteIndex }) {
   if (quotes != null && quotes[quoteIndex] != null) {
     return (
@@ -58,6 +64,20 @@ function QuoteBlock({ quoteData, imageData, color, setColor }) {
   );
 }
 
+function Board({ quoteList }) {
+  return (
+    <div className="Board">
+      <div className="Board-slot">
+        {quoteList.map((item) => (
+          // either the Board or QuoteBlock parameters might have to be changed so I don't have to build these awkward attributes for the QuoteBlock component
+          // I also need to account for how to pass along an image vs. a color
+          <QuoteBlock key={item.id} quoteData={{quotes: [{text: item.quote.text, author: item.quote.author}], quoteIndex: 0}} imageData={{ urls: {small: item.background}}} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [quoteData, setQuoteData] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -68,6 +88,7 @@ function App() {
   const [image, setImage] = useState(null);
   const [color, setColor] = useState(getRandomColor());
   const [imgAsBackground, setImgAsBackground] = useState(true);
+  const [quoteList, setQuoteList] = useState([]);
 
   useEffect(() => {
     console.log("here");
@@ -108,6 +129,10 @@ function App() {
           <input type="radio" id="color" name="background_type" value="Color" onChange={() => setImgAsBackground(false)} checked={!imgAsBackground} />
           <label htmlFor="color">Color</label>
         </div>
+
+        <button onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : color, quoteList, setQuoteList) }}>Add to board</button>
+
+        <Board quoteList={quoteList} />
       </div>
     </div>
   );
