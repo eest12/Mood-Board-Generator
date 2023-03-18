@@ -14,13 +14,16 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 30vh;
+  min-height: 24vh;
+  font-size: calc(20px + 2vmin);
+}
+
+.App-header, .App-footer {
+  background-color: #254651;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
 }
 
@@ -39,7 +42,6 @@
   width: 300px;
   height: 250px;
   margin: 20px;
-  position: relative;
 }
 
 .Quote {
@@ -61,6 +63,7 @@
   height: 400px;
   border: 1px solid black;
   margin: 10px;
+  color: gray;
 }
 
 .Board-slot {
@@ -74,6 +77,10 @@
 
 .Radio-buttons {
   margin: 5px;
+}
+
+.Center-parent {
+  position: relative;
 }
 
 .Center {

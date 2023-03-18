@@ -45,37 +45,45 @@ function Quote({ quotes, quoteIndex }) {
 function QuoteBlock({ quoteData, imageData, color, setColor }) {
   if (imageData) {
     return (
-      <div className="Quote-block" style={{ backgroundImage: `url(${imageData.urls.small}`, backgroundSize: "cover" }}>
+      <div className="Quote-block Center-parent" style={{ backgroundImage: `url(${imageData.urls.small}`, backgroundSize: "cover" }}>
         <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
       </div>
     );
   }
   if (color && setColor) {
     return (
-      <div className="Quote-block" style={{ backgroundColor: color }}>
+      <div className="Quote-block Center-parent" style={{ backgroundColor: color }}>
         <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
       </div>
     );
   }
   return (
-    <div className="Quote-block">
+    <div className="Quote-block Center-parent">
       <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
     </div>
   );
 }
 
 function Board({ quoteList }) {
-  return (
-    <div className="Board">
-      <div className="Board-slot">
-        {quoteList.map((item) => (
-          // either the Board or QuoteBlock parameters might have to be changed so I don't have to build these awkward attributes for the QuoteBlock component
-          // I also need to account for how to pass along an image vs. a color
-          <QuoteBlock key={item.id} quoteData={{quotes: [{text: item.quote.text, author: item.quote.author}], quoteIndex: 0}} imageData={{ urls: {small: item.background}}} />
-        ))}
+  if (quoteList && quoteList.length > 0) {
+    return (
+      <div className="Board">
+        <div className="Board-slot">
+          {quoteList.map((item) => (
+            // either the Board or QuoteBlock parameters might have to be changed so I don't have to build these awkward attributes for the QuoteBlock component
+            // I also need to account for how to pass along an image vs. a color
+            <QuoteBlock key={item.id} quoteData={{ quotes: [{ text: item.quote.text, author: item.quote.author }], quoteIndex: 0 }} imageData={{ urls: { small: item.background } }} />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div className="Board Center-parent">
+        <span className="Center">Quotes you add to the board will appear here.</span>
+      </div>
+    );
+  }
 }
 
 function App() {
@@ -115,6 +123,7 @@ function App() {
       <header className="App-header">
         <p>Mood Board Generator</p>
       </header>
+
       <div className="Main-content">
         {loading ? <p>Loading...</p> : <QuoteBlock quoteData={quoteData} imageData={imgAsBackground ? image : null} color={!imgAsBackground ? color : null} setColor={!imgAsBackground ? setColor : null} />}
 
@@ -133,6 +142,10 @@ function App() {
         <button onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : color, quoteList, setQuoteList) }}>Add to board</button>
 
         <Board quoteList={quoteList} />
+      </div>
+
+      <div className="App-footer">
+        <p>&#169; 2023 by Erika Estrada. :-)</p>
       </div>
     </div>
   );
