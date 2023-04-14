@@ -29,12 +29,12 @@ function addQuote(quote, background, quoteList, setQuoteList) {
   setQuoteList(newQuoteList);
 }
 
-function Quote({ quotes, quoteIndex }) {
-  if (quotes != null && quotes[quoteIndex] != null) {
+function Quote({ quote }) {
+  if (quote != null) {
     return (
       <figure className="Quote Center">
-        <blockquote className="Quote-text">{quotes[quoteIndex].text}</blockquote>
-        <figcaption><i>&#8212;{quotes[quoteIndex].author == null ? "Unknown" : quotes[quoteIndex].author}</i></figcaption>
+        <blockquote className="Quote-text">{quote.text}</blockquote>
+        <figcaption><i>&#8212;{quote.author == null ? "Unknown" : quote.author}</i></figcaption>
       </figure>
     );
   }
@@ -42,24 +42,24 @@ function Quote({ quotes, quoteIndex }) {
   return <p>Something went wrong. Try again.</p>;
 }
 
-function QuoteBlock({ quoteData, imageData, color, setColor }) {
-  if (imageData) {
+function QuoteBlock({ quote, imageUrl, color, setColor }) {
+  if (imageUrl) {
     return (
-      <div className="Quote-block Center-parent" style={{ backgroundImage: `url(${imageData.urls.small}`, backgroundSize: "cover" }}>
-        <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
+      <div className="Quote-block Center-parent" style={{ backgroundImage: `url(${imageUrl}`, backgroundSize: "cover" }}>
+        <Quote quote={quote} />
       </div>
     );
   }
   if (color && setColor) {
     return (
       <div className="Quote-block Center-parent" style={{ backgroundColor: color }}>
-        <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
+        <Quote quote={quote} />
       </div>
     );
   }
   return (
     <div className="Quote-block Center-parent">
-      <Quote quotes={quoteData.quotes} quoteIndex={quoteData.quoteIndex} />
+      <Quote quote={quote} />
     </div>
   );
 }
@@ -70,9 +70,8 @@ function Board({ quoteList }) {
       <div className="Board">
         <div className="Board-slot">
           {quoteList.map((item) => (
-            // either the Board or QuoteBlock parameters might have to be changed so I don't have to build these awkward attributes for the QuoteBlock component
-            // I also need to account for how to pass along an image vs. a color
-            <QuoteBlock key={item.id} quoteData={{ quotes: [{ text: item.quote.text, author: item.quote.author }], quoteIndex: 0 }} imageData={{ urls: { small: item.background } }} />
+            // I need to account for how to pass along an image vs. a color
+            <QuoteBlock key={item.id} quote={item.quote} imageUrl={item.background} />
           ))}
         </div>
       </div>
@@ -125,7 +124,11 @@ function App() {
       </header>
 
       <div className="Main-content">
-        {loading ? <p>Loading...</p> : <QuoteBlock quoteData={quoteData} imageData={imgAsBackground ? image : null} color={!imgAsBackground ? color : null} setColor={!imgAsBackground ? setColor : null} />}
+        {loading ? <p>Loading...</p> : <QuoteBlock
+                                          quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
+                                          imageUrl={imgAsBackground && image ? image.urls.small : null}
+                                          color={!imgAsBackground ? color : null}
+                                          setColor={!imgAsBackground ? setColor : null} />}
 
         <div className="Buttons">
           <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
