@@ -114,7 +114,6 @@ function Board({ quoteList }) {
       <div className="Board">
         <div className="Board-slot">
           {quoteList.map((item) => (
-            // I need to account for how to pass along an image vs. a color
             <QuoteBlock key={item.id} quote={item.quote} imageUrl={item.backgroundImg} color={item.backgroundColor} />
           ))}
         </div>
