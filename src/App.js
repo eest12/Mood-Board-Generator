@@ -2,6 +2,11 @@ import './App.css';
 import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
 
+/**
+ * Generates a random index for the given data.
+ * @param {*} data An array to get a random index for.
+ * @returns A positive integer less than the size of the data parameter, or -1 if data is empty or null.
+ */
 function getRandomIndex(data) {
   if (data && data.length > 0) {
     return Math.floor(Math.random() * data.length);
@@ -9,6 +14,10 @@ function getRandomIndex(data) {
   return -1;
 }
 
+/**
+ * Generates a random color.
+ * @returns A string representing a color in RGB format.
+ */
 function getRandomColor() {
   const rgb = [];
   for (let i = 0; i < 3; i++) {
@@ -17,18 +26,43 @@ function getRandomColor() {
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
 }
 
+/**
+ * 
+ * @param {*} setImage 
+ * @param {*} setError 
+ */
 function fetchImage(setImage, setError) {
   fetch(`https://api.unsplash.com/photos/random?client_id=${unsplashKey}`)
     .then((res) => res.json())
     .then(setImage)
 }
 
-function addQuote(quote, background, quoteList, setQuoteList) {
+/**
+ * Adds a quote card to quoteList, including the quote text and background image or color.
+ * @param {*} quote An object containing the following keys: text, author.
+ * @param {*} backgroundImg An image URL.
+ * @param {*} backgroundColor A color.
+ * @param {*} quoteList A stateful list to add the quote card to.
+ * @param {*} setQuoteList A state updater function that will be called to update quoteList with the new quote card.
+ */
+function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList) {
   console.log(quoteList);
-  const newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, background: background });
+  let newQuoteList;
+
+  if (backgroundImg) {
+    newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundImg: backgroundImg });
+  } else {
+    newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundColor: backgroundColor });
+  }
+
   setQuoteList(newQuoteList);
 }
 
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 function Quote({ quote }) {
   if (quote != null) {
     return (
@@ -42,7 +76,12 @@ function Quote({ quote }) {
   return <p>Something went wrong. Try again.</p>;
 }
 
-function QuoteBlock({ quote, imageUrl, color, setColor }) {
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
+function QuoteBlock({ quote, imageUrl, color }) {
   if (imageUrl) {
     return (
       <div className="Quote-block Center-parent" style={{ backgroundImage: `url(${imageUrl}`, backgroundSize: "cover" }}>
@@ -50,7 +89,7 @@ function QuoteBlock({ quote, imageUrl, color, setColor }) {
       </div>
     );
   }
-  if (color && setColor) {
+  if (color) {
     return (
       <div className="Quote-block Center-parent" style={{ backgroundColor: color }}>
         <Quote quote={quote} />
@@ -64,6 +103,11 @@ function QuoteBlock({ quote, imageUrl, color, setColor }) {
   );
 }
 
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 function Board({ quoteList }) {
   if (quoteList && quoteList.length > 0) {
     return (
@@ -71,7 +115,7 @@ function Board({ quoteList }) {
         <div className="Board-slot">
           {quoteList.map((item) => (
             // I need to account for how to pass along an image vs. a color
-            <QuoteBlock key={item.id} quote={item.quote} imageUrl={item.background} />
+            <QuoteBlock key={item.id} quote={item.quote} imageUrl={item.backgroundImg} color={item.backgroundColor} />
           ))}
         </div>
       </div>
@@ -85,6 +129,10 @@ function Board({ quoteList }) {
   }
 }
 
+/**
+ * Main function that generates the app content.
+ * @returns App element, which contaings all the contents of the app.
+ */
 function App() {
   const [quoteData, setQuoteData] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
@@ -119,16 +167,20 @@ function App() {
 
   return (
     <div className="App">
+      {/* ----- HEADER ----- */}
       <header className="App-header">
         <p>Mood Board Generator</p>
       </header>
 
+      {/* ----- MAIN CONTENT ----- */}
       <div className="Main-content">
+        {/* ----- Single Quote Block ----- */}
         {loading ? <p>Loading...</p> : <QuoteBlock
                                           quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
                                           imageUrl={imgAsBackground && image ? image.urls.small : null}
-                                          color={!imgAsBackground ? color : null}
-                                          setColor={!imgAsBackground ? setColor : null} />}
+                                          color={!imgAsBackground ? color : null} />}
+
+        {/* ----- Controls ----- */}
 
         <div className="Buttons">
           <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
@@ -142,11 +194,13 @@ function App() {
           <label htmlFor="color">Color</label>
         </div>
 
-        <button onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : color, quoteList, setQuoteList) }}>Add to board</button>
+        <button onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
 
+        {/* ----- Mood Board ----- */}
         <Board quoteList={quoteList} />
       </div>
 
+      {/* ----- FOOTER ----- */}
       <div className="App-footer">
         <p>&#169; 2023 by Erika Estrada. :-)</p>
       </div>
