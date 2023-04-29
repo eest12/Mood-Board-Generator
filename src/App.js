@@ -174,10 +174,12 @@ function App() {
       {/* ----- MAIN CONTENT ----- */}
       <div className="Main-content">
         {/* ----- Single Quote Block ----- */}
-        {loading ? <p>Loading...</p> : <QuoteBlock
-                                          quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
-                                          imageUrl={imgAsBackground && image ? image.urls.small : null}
-                                          color={!imgAsBackground ? color : null} />}
+        <div className="Quote-current">
+          {loading ? <p>Loading...</p> : <QuoteBlock
+                                            quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
+                                            imageUrl={imgAsBackground && image ? image.urls.small : null}
+                                            color={!imgAsBackground ? color : null} />}
+        </div>
 
         {/* ----- Controls ----- */}
 
