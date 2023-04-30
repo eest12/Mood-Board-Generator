@@ -2,6 +2,8 @@ import './App.css';
 import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
 
+const BOARD_MAX_SIZE = 9;
+
 /**
  * Generates a random index for the given data.
  * @param {*} data An array to get a random index for.
@@ -46,16 +48,18 @@ function fetchImage(setImage, setError) {
  * @param {*} setQuoteList A state updater function that will be called to update quoteList with the new quote card.
  */
 function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList) {
-  console.log(quoteList);
-  let newQuoteList;
+  if (quoteList && quoteList.length < BOARD_MAX_SIZE) {
+    console.log(quoteList);
+    let newQuoteList;
 
-  if (backgroundImg) {
-    newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundImg: backgroundImg });
-  } else {
-    newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundColor: backgroundColor });
+    if (backgroundImg) {
+      newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundImg: backgroundImg });
+    } else {
+      newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundColor: backgroundColor });
+    }
+
+    setQuoteList(newQuoteList);
   }
-
-  setQuoteList(newQuoteList);
 }
 
 /**
@@ -112,11 +116,11 @@ function Board({ quoteList }) {
   if (quoteList && quoteList.length > 0) {
     return (
       <div className="Board">
-        <div className="Board-slot">
-          {quoteList.map((item) => (
-            <QuoteBlock key={item.id} quote={item.quote} imageUrl={item.backgroundImg} color={item.backgroundColor} />
-          ))}
-        </div>
+        {quoteList.map((item) => (
+          <div key={item.id} className="Board-slot">
+            <QuoteBlock quote={item.quote} imageUrl={item.backgroundImg} color={item.backgroundColor} />
+          </div>
+        ))}
       </div>
     );
   } else {
@@ -176,9 +180,9 @@ function App() {
         {/* ----- Single Quote Block ----- */}
         <div className="Quote-current">
           {loading ? <p>Loading...</p> : <QuoteBlock
-                                            quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
-                                            imageUrl={imgAsBackground && image ? image.urls.small : null}
-                                            color={!imgAsBackground ? color : null} />}
+            quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
+            imageUrl={imgAsBackground && image ? image.urls.small : null}
+            color={!imgAsBackground ? color : null} />}
         </div>
 
         {/* ----- Controls ----- */}
@@ -195,7 +199,7 @@ function App() {
           <label htmlFor="color">Color</label>
         </div>
 
-        <button onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
+        <button disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
 
         {/* ----- Mood Board ----- */}
         <Board quoteList={quoteList} />

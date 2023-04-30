@@ -68,11 +68,16 @@
 }
 
 .Board {
-  width: 700px;
-  height: 400px;
+  width: 640px;
+  height: 540px;
   border: 1px solid black;
-  margin: 10px;
+  margin: 20px;
   color: gray;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  justify-items: center;
+  align-items: center;
 }
 
 .Board-slot {
@@ -80,7 +85,6 @@
   display: inline-block;
   width: 200px;
   height: 167px;
-  margin: 20px;
   font-size: 10px;
 }
 
