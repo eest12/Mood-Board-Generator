@@ -177,32 +177,37 @@ function App() {
 
       {/* ----- MAIN CONTENT ----- */}
       <div className="Main-content">
-        {/* ----- Single Quote Block ----- */}
-        <div className="Quote-current">
-          {loading ? <p>Loading...</p> : <QuoteBlock
-            quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
-            imageUrl={imgAsBackground && image ? image.urls.small : null}
-            color={!imgAsBackground ? color : null} />}
+        <div className="Flex-section">
+          {/* ----- Single Quote Block ----- */}
+          <div className="Quote-current">
+            {loading ? <p>Loading...</p> : <QuoteBlock
+              quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
+              imageUrl={imgAsBackground && image ? image.urls.small : null}
+              color={!imgAsBackground ? color : null} />}
+          </div>
+
+          {/* ----- Controls ----- */}
+
+          <div className="Radio-buttons">
+            <input type="radio" id="image" name="background_type" value="Image" onChange={() => setImgAsBackground(true)} checked={imgAsBackground} />
+            <label htmlFor="image">Image</label>
+            <input type="radio" id="color" name="background_type" value="Color" onChange={() => setImgAsBackground(false)} checked={!imgAsBackground} />
+            <label htmlFor="color">Color</label>
+          </div>
+
+          <div className="Buttons">
+            <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
+            <button className="Button" onClick={() => imgAsBackground ? fetchImage(setImage) : setColor(getRandomColor())}>New {imgAsBackground ? "image" : "color"}</button>
+
+            <button className="Button" disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
+            <button className="Button" disabled={quoteList.length === 0} onClick={() => setQuoteList([])}>Clear board</button>
+          </div>
         </div>
-
-        {/* ----- Controls ----- */}
-
-        <div className="Buttons">
-          <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
-          <button className="Button" onClick={() => imgAsBackground ? fetchImage(setImage) : setColor(getRandomColor())}>New {imgAsBackground ? "image" : "color"}</button>
-        </div>
-
-        <div className="Radio-buttons">
-          <input type="radio" id="image" name="background_type" value="Image" onChange={() => setImgAsBackground(true)} checked={imgAsBackground} />
-          <label htmlFor="image">Image</label>
-          <input type="radio" id="color" name="background_type" value="Color" onChange={() => setImgAsBackground(false)} checked={!imgAsBackground} />
-          <label htmlFor="color">Color</label>
-        </div>
-
-        <button disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
 
         {/* ----- Mood Board ----- */}
-        <Board quoteList={quoteList} />
+        <div className="Flex-section">
+          <Board quoteList={quoteList} />
+        </div>
       </div>
 
       {/* ----- FOOTER ----- */}

@@ -15,7 +15,7 @@
 
 .App-header {
   min-height: 24vh;
-  font-size: calc(20px + 2vmin);
+  font-size: calc(30px + 2vmin);
 }
 
 .App-header, .App-footer {
@@ -33,17 +33,20 @@
 
 .Main-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
+.Flex-section {
+  padding: 40px 30px;
+}
+
 .Quote-current {
-  border: 1px dotted red;
   display: inline-block;
   width: 300px;
   height: 250px;
-  margin: 20px;
+  margin: 10px;
   font-size: 15px;
 }
 
@@ -70,8 +73,9 @@
 .Board {
   width: 640px;
   height: 540px;
-  border: 1px solid black;
-  margin: 20px;
+  border: 4px solid #254651;
+  border-radius: 8px;
+  padding: 5px;
   color: gray;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -81,7 +85,6 @@
 }
 
 .Board-slot {
-  border: 1px dotted black;
   display: inline-block;
   width: 200px;
   height: 167px;
@@ -90,10 +93,25 @@
 
 .Button {
   margin: 5px;
+  width: 100px;
+  height: 30px;
+  background-color: #254651;
+  color:white;
+  border: 1px solid #075974;
+  border-radius: 2px;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.Button:hover {
+  background-color: #075974;
+}
+
+.Button:disabled {
+  background-color: #7899a4;
 }
 
 .Radio-buttons {
-  margin: 5px;
+  margin: 10px 5px;
 }
 
 .Center-parent {
