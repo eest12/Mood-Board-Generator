@@ -3,6 +3,7 @@ import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
 
 const BOARD_MAX_SIZE = 9;
+let LAST_CARD_ID = 0;
 
 /**
  * Generates a random index for the given data.
@@ -49,16 +50,17 @@ function fetchImage(setImage, setError) {
  */
 function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList) {
   if (quoteList && quoteList.length < BOARD_MAX_SIZE) {
-    console.log(quoteList);
     let newQuoteList;
+    LAST_CARD_ID += 1;
 
     if (backgroundImg) {
-      newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundImg: backgroundImg });
+      newQuoteList = quoteList.concat({ id: LAST_CARD_ID, quote: quote, backgroundImg: backgroundImg });
     } else {
-      newQuoteList = quoteList.concat({ id: quoteList.length, quote: quote, backgroundColor: backgroundColor });
+      newQuoteList = quoteList.concat({ id: LAST_CARD_ID, quote: quote, backgroundColor: backgroundColor });
     }
 
     setQuoteList(newQuoteList);
+    console.log(quoteList);
   }
 }
 
@@ -71,6 +73,26 @@ function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList
 function selectCard(e, cardId, setSelected) {
   e.stopPropagation(); // prevents deselecting by App element
   setSelected(cardId);
+}
+
+/**
+ * Deletes a card from the board by removing it from quoteList.
+ * @param {*} cardId Id of the card to delete
+ * @param {*} quoteList Array of quote objects representing the cards in the board
+ * @param {*} setQuoteList Stateful function to update quoteList
+ */
+function deleteCard(cardId, quoteList, setQuoteList) {
+  if (cardId != null) {
+    for (let i = 0; i < quoteList.length; i++) { // find the quote whose id == cardId
+      if (quoteList[i].id === cardId) {
+        quoteList.splice(i, 1);
+        break;
+      }
+    }
+    setQuoteList(quoteList);
+  } else {
+    console.log("No card selected");
+  }
 }
 
 /**
@@ -148,7 +170,7 @@ function Board({ quoteList, selected, setSelected }) {
  */
 function BoardSlot({ id, quote, image, color, selected, setSelected }) {
   return (
-    <div className='Board-slot' onClick={(e) => selectCard(e, id, setSelected)} style={id === selected ? {border: "5px solid orange"} : {border: "none"}}>
+    <div className='Board-slot' onClick={(e) => selectCard(e, id, setSelected)} style={id === selected ? { border: "5px solid orange" } : { border: "none" }}>
       <QuoteBlock quote={quote} imageUrl={image} color={color} />
     </div>
   )
@@ -224,6 +246,7 @@ function App() {
 
             <button className="Button" disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
             <button className="Button" disabled={quoteList.length === 0} onClick={() => setQuoteList([])}>Clear board</button>
+            <button className="Button" disabled={selected == null} onClick={() => deleteCard(selected, quoteList, setQuoteList)}>Delete</button>
           </div>
         </div>
 
