@@ -63,6 +63,17 @@ function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList
 }
 
 /**
+ * Sets the selected ID to the new ID.
+ * @param {*} e Select event
+ * @param {*} cardId Id of card that was selected
+ * @param {*} setSelected Stateful function to change the selected ID
+ */
+function selectCard(e, cardId, setSelected) {
+  e.stopPropagation(); // prevents deselecting by App element
+  setSelected(cardId);
+}
+
+/**
  * 
  * @param {*} param0 
  * @returns 
@@ -112,14 +123,12 @@ function QuoteBlock({ quote, imageUrl, color }) {
  * @param {*} param0 
  * @returns 
  */
-function Board({ quoteList }) {
+function Board({ quoteList, selected, setSelected }) {
   if (quoteList && quoteList.length > 0) {
     return (
       <div className="Board">
         {quoteList.map((item) => (
-          <div key={item.id} className="Board-slot">
-            <QuoteBlock quote={item.quote} imageUrl={item.backgroundImg} color={item.backgroundColor} />
-          </div>
+          <BoardSlot key={item.id} id={item.id} quote={item.quote} image={item.backgroundImg} color={item.backgroundColor} selected={selected} setSelected={setSelected} />
         ))}
       </div>
     );
@@ -130,6 +139,19 @@ function Board({ quoteList }) {
       </div>
     );
   }
+}
+
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
+function BoardSlot({ id, quote, image, color, selected, setSelected }) {
+  return (
+    <div className='Board-slot' onClick={(e) => selectCard(e, id, setSelected)} style={id === selected ? {border: "5px solid orange"} : {border: "none"}}>
+      <QuoteBlock quote={quote} imageUrl={image} color={color} />
+    </div>
+  )
 }
 
 /**
@@ -147,6 +169,7 @@ function App() {
   const [color, setColor] = useState(getRandomColor());
   const [imgAsBackground, setImgAsBackground] = useState(true);
   const [quoteList, setQuoteList] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     console.log("here");
@@ -169,7 +192,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App" onClick={() => setSelected(null)}>
       {/* ----- HEADER ----- */}
       <header className="App-header">
         <p>Mood Board Generator</p>
@@ -206,7 +229,7 @@ function App() {
 
         {/* ----- Mood Board ----- */}
         <div className="Flex-section">
-          <Board quoteList={quoteList} />
+          <Board quoteList={quoteList} selected={selected} setSelected={setSelected} />
         </div>
       </div>
 
