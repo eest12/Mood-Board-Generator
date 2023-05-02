@@ -172,6 +172,7 @@ function BoardSlot({ id, quote, image, color, selected, setSelected }) {
   return (
     <div className='Board-slot' onClick={(e) => selectCard(e, id, setSelected)} style={id === selected ? { border: "5px solid orange" } : { border: "none" }}>
       <QuoteBlock quote={quote} imageUrl={image} color={color} />
+      <div className='Board-slot-overlay'></div>
     </div>
   )
 }
