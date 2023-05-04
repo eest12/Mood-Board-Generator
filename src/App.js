@@ -234,17 +234,19 @@ function App() {
 
           {/* ----- Controls ----- */}
 
-          <div className="Radio-buttons">
-            <input type="radio" id="image" name="background_type" value="Image" onChange={() => setImgAsBackground(true)} checked={imgAsBackground} />
-            <label htmlFor="image">Image</label>
-            <input type="radio" id="color" name="background_type" value="Color" onChange={() => setImgAsBackground(false)} checked={!imgAsBackground} />
-            <label htmlFor="color">Color</label>
-          </div>
+          <label className="Switch">
+            <span className={"Switch-label Left " + (!imgAsBackground ? "Checked" : "")}>Color</span>
+            <input type="checkbox" checked={imgAsBackground} onChange={() => setImgAsBackground(!imgAsBackground)} />
+            <span className="Slider"></span>
+            <span className={"Switch-label Right "  + (imgAsBackground ? "Checked" : "")}>Image</span>
+          </label>
 
-          <div className="Buttons">
+          <div>
             <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
             <button className="Button" onClick={() => imgAsBackground ? fetchImage(setImage) : setColor(getRandomColor())}>New {imgAsBackground ? "image" : "color"}</button>
+          </div>
 
+          <div>
             <button className="Button" disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
             <button className="Button" disabled={quoteList.length === 0} onClick={() => setQuoteList([])}>Clear board</button>
             <button className="Button" disabled={selected == null} onClick={() => deleteCard(selected, quoteList, setQuoteList)}>Delete</button>
