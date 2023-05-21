@@ -1,6 +1,8 @@
 import './App.css';
 import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
+import { QuoteBlock } from "./components/QuoteBlock/QuoteBlock.js";
+import { Board } from "./components/Board/Board.js";
 
 const BOARD_MAX_SIZE = 9;
 let LAST_CARD_ID = 0;
@@ -65,17 +67,6 @@ function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList
 }
 
 /**
- * Sets the selected ID to the new ID.
- * @param {*} e Select event
- * @param {*} cardId Id of card that was selected
- * @param {*} setSelected Stateful function to change the selected ID
- */
-function selectCard(e, cardId, setSelected) {
-  e.stopPropagation(); // prevents deselecting by App element
-  setSelected(cardId);
-}
-
-/**
  * Deletes a card from the board by removing it from quoteList.
  * @param {*} cardId Id of the card to delete
  * @param {*} quoteList Array of quote objects representing the cards in the board
@@ -93,88 +84,6 @@ function deleteCard(cardId, quoteList, setQuoteList) {
   } else {
     console.log("No card selected");
   }
-}
-
-/**
- * 
- * @param {*} param0 
- * @returns 
- */
-function Quote({ quote }) {
-  if (quote != null) {
-    return (
-      <figure className="Quote Center">
-        <blockquote className="Quote-text">{quote.text}</blockquote>
-        <figcaption><i>&#8212;{quote.author == null ? "Unknown" : quote.author}</i></figcaption>
-      </figure>
-    );
-  }
-
-  return <p>Something went wrong. Try again.</p>;
-}
-
-/**
- * 
- * @param {*} param0 
- * @returns 
- */
-function QuoteBlock({ quote, imageUrl, color }) {
-  if (imageUrl) {
-    return (
-      <div className="Quote-block Center-parent" style={{ backgroundImage: `url(${imageUrl}`, backgroundSize: "cover" }}>
-        <Quote quote={quote} />
-      </div>
-    );
-  }
-  if (color) {
-    return (
-      <div className="Quote-block Center-parent" style={{ backgroundColor: color }}>
-        <Quote quote={quote} />
-      </div>
-    );
-  }
-  return (
-    <div className="Quote-block Center-parent">
-      <Quote quote={quote} />
-    </div>
-  );
-}
-
-/**
- * 
- * @param {*} param0 
- * @returns 
- */
-function Board({ quoteList, selected, setSelected }) {
-  if (quoteList && quoteList.length > 0) {
-    return (
-      <div className="Board">
-        {quoteList.map((item) => (
-          <BoardSlot key={item.id} id={item.id} quote={item.quote} image={item.backgroundImg} color={item.backgroundColor} selected={selected} setSelected={setSelected} />
-        ))}
-      </div>
-    );
-  } else {
-    return (
-      <div className="Board Center-parent">
-        <span className="Center">Quotes you add to the board will appear here.</span>
-      </div>
-    );
-  }
-}
-
-/**
- * 
- * @param {*} param0 
- * @returns 
- */
-function BoardSlot({ id, quote, image, color, selected, setSelected }) {
-  return (
-    <div className='Board-slot' onClick={(e) => selectCard(e, id, setSelected)} style={id === selected ? { border: "5px solid orange" } : { border: "none" }}>
-      <QuoteBlock quote={quote} imageUrl={image} color={color} />
-      <div className='Board-slot-overlay'></div>
-    </div>
-  )
 }
 
 /**
