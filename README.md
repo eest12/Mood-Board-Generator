@@ -27,8 +27,8 @@ From the Mood-Board-Generator directory, run these commands to install the Node 
 - A mood board can have up to nine cards, in a 3x3 grid.
 - A quote card can be selected by clicking on it, which will highlight the card.
 - A selected card can be removed from the mood board by clicking the Delete button.
+- Quote cards can be drag-and-dropped within the mood board to change their order.
 
 ### Not yet implemented
 
-- Quote cards can be drag-and-dropped within the mood board to change their order.
 - The mood board can be downloaded as an image file.
