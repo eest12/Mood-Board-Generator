@@ -164,7 +164,7 @@ function App() {
 
         {/* ----- Mood Board ----- */}
         <div className="Flex-section">
-          <Board quoteList={quoteList} selected={selected} setSelected={setSelected} />
+          <Board quoteList={quoteList} setQuoteList={setQuoteList} selected={selected} setSelected={setSelected} />
         </div>
       </div>
 
