@@ -2,7 +2,7 @@ import './App.css';
 import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
 import { QuoteBlock } from "./components/QuoteBlock/QuoteBlock.js";
-import { Board } from "./components/Board/Board.js";
+import { Board, downloadScreenshot } from "./components/Board/Board.js";
 
 const BOARD_MAX_SIZE = 9;
 let LAST_CARD_ID = 0;
@@ -159,6 +159,7 @@ function App() {
             <button className="Button" disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
             <button className="Button" disabled={quoteList.length === 0} onClick={() => setQuoteList([])}>Clear board</button>
             <button className="Button" disabled={selected == null} onClick={() => deleteCard(selected, quoteList, setQuoteList)}>Delete</button>
+            <button className="Button" disabled={quoteList.length === 0} onClick={downloadScreenshot}>Download</button>
           </div>
         </div>
 

@@ -17,8 +17,6 @@ From the Mood-Board-Generator directory, run these commands to install the Node 
 
 ## Features
 
-### Currently implemented
-
 - A new random quote can be requested until a desired one is found.
 - A quote can have an image or a solid color as a backdrop. The user selects which type of background to generate for each quote.
 - A new random image or color can be requested until a desired one is found.
@@ -28,7 +26,4 @@ From the Mood-Board-Generator directory, run these commands to install the Node 
 - A quote card can be selected by clicking on it, which will highlight the card.
 - A selected card can be removed from the mood board by clicking the Delete button.
 - Quote cards can be drag-and-dropped within the mood board to change their order.
-
-### Not yet implemented
-
 - The mood board can be downloaded as an image file.
