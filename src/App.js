@@ -31,6 +31,13 @@ function App() {
       .catch((err) => setError(err));
   };
 
+  // Triggers a download as required by the Unsplash API Guidelines.
+  // Calls an event endpoint to increment the number of downloads a photo has.
+  const unsplashDownload = () => {
+    fetch(`${image.links.download_location}?client_id=${unsplashKey}`)
+    .then((res) => console.log(res));
+  }
+
   /**
  * Generates a random index for the given data.
  * @param {*} data An array to get a random index for.
@@ -85,12 +92,12 @@ function App() {
 
       if (backgroundImg) {
         newQuoteList = boardCards.concat({ id: LAST_CARD_ID, quote: quote, backgroundImg: backgroundImg });
+        unsplashDownload();
       } else {
         newQuoteList = boardCards.concat({ id: LAST_CARD_ID, quote: quote, backgroundColor: backgroundColor });
       }
 
       setBoardCards(newQuoteList);
-      console.log(boardCards);
     }
   };
 
