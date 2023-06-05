@@ -1,90 +1,10 @@
 import './App.css';
 import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
-import { QuoteBlock } from "./components/QuoteBlock/QuoteBlock.js";
-import { Board, downloadScreenshot } from "./components/Board/Board.js";
+import { Card } from "./components/Card/Card.js";
+import { Board, BOARD_MAX_SIZE, downloadScreenshot } from "./components/Board/Board.js";
 
-const BOARD_MAX_SIZE = 9;
-let LAST_CARD_ID = 0;
-
-/**
- * Generates a random index for the given data.
- * @param {*} data An array to get a random index for.
- * @returns A positive integer less than the size of the data parameter, or -1 if data is empty or null.
- */
-function getRandomIndex(data) {
-  if (data && data.length > 0) {
-    return Math.floor(Math.random() * data.length);
-  }
-  return -1;
-}
-
-/**
- * Generates a random color.
- * @returns A string representing a color in RGB format.
- */
-function getRandomColor() {
-  const rgb = [];
-  for (let i = 0; i < 3; i++) {
-    rgb.push(Math.floor(Math.random() * 256));
-  }
-  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-}
-
-/**
- * 
- * @param {*} setImage 
- * @param {*} setError 
- */
-function fetchImage(setImage, setError) {
-  fetch(`https://api.unsplash.com/photos/random?client_id=${unsplashKey}`)
-    .then((res) => res.json())
-    .then(setImage)
-}
-
-/**
- * Adds a quote card to quoteList, including the quote text and background image or color.
- * @param {*} quote An object containing the following keys: text, author.
- * @param {*} backgroundImg An image URL.
- * @param {*} backgroundColor A color.
- * @param {*} quoteList A stateful list to add the quote card to.
- * @param {*} setQuoteList A state updater function that will be called to update quoteList with the new quote card.
- */
-function addQuote(quote, backgroundImg, backgroundColor, quoteList, setQuoteList) {
-  if (quoteList && quoteList.length < BOARD_MAX_SIZE) {
-    let newQuoteList;
-    LAST_CARD_ID += 1;
-
-    if (backgroundImg) {
-      newQuoteList = quoteList.concat({ id: LAST_CARD_ID, quote: quote, backgroundImg: backgroundImg });
-    } else {
-      newQuoteList = quoteList.concat({ id: LAST_CARD_ID, quote: quote, backgroundColor: backgroundColor });
-    }
-
-    setQuoteList(newQuoteList);
-    console.log(quoteList);
-  }
-}
-
-/**
- * Deletes a card from the board by removing it from quoteList.
- * @param {*} cardId Id of the card to delete
- * @param {*} quoteList Array of quote objects representing the cards in the board
- * @param {*} setQuoteList Stateful function to update quoteList
- */
-function deleteCard(cardId, quoteList, setQuoteList) {
-  if (cardId != null) {
-    for (let i = 0; i < quoteList.length; i++) { // find the quote whose id == cardId
-      if (quoteList[i].id === cardId) {
-        quoteList.splice(i, 1);
-        break;
-      }
-    }
-    setQuoteList(quoteList);
-  } else {
-    console.log("No card selected");
-  }
-}
+let LAST_CARD_ID = 0; // increments when a card is added to the board
 
 /**
  * Main function that generates the app content.
@@ -94,19 +14,108 @@ function App() {
   const [quoteData, setQuoteData] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { quotes: null, quoteIndex: 0 }
-  )
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState(null);
-  const [color, setColor] = useState(getRandomColor());
-  const [imgAsBackground, setImgAsBackground] = useState(true);
-  const [quoteList, setQuoteList] = useState([]);
-  const [selected, setSelected] = useState(null);
+  ); // set consisting of a list of all quotes and a quote index for the quote currently being previewed
+  const [error, setError] = useState(null); // error message from any fetch call
+  const [loading, setLoading] = useState(false); // whether data is being fetched
+  const [image, setImage] = useState(null); // card background image
+  const [color, setColor] = useState(null); // card background color
+  const [isImgBG, setIsImgBG] = useState(true); // whether card background is an image (vs. solid color)
+  const [boardCards, setBoardCards] = useState([]); // cards added to the board
+  const [selectedCard, setSelectedCard] = useState(null); // card selected in the board by the user
 
+  // Requests an image from the Unsplash API
+  const fetchImage = () => {
+    fetch(`https://api.unsplash.com/photos/random?client_id=${unsplashKey}`)
+      .then((res) => res.json())
+      .then(setImage)
+      .catch((err) => setError(err));
+  };
+
+  /**
+ * Generates a random index for the given data.
+ * @param {*} data An array to get a random index for.
+ * @returns A positive integer less than the size of the data parameter, or -1 if data is empty or null.
+ */
+  const getRandomIndex = (data) => {
+    if (data && data.length > 0) {
+      return Math.floor(Math.random() * data.length);
+    }
+    return -1;
+  };
+
+  /**
+ * Generates a random color.
+ * @returns A string representing a color in RGB format.
+ */
+  const getRandomColor = () => {
+    const rgb = [];
+    for (let i = 0; i < 3; i++) {
+      rgb.push(Math.floor(Math.random() * 256));
+    }
+    return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+  };
+
+  // Toggles between image and color type
+  const handleBackgroundType = () => setIsImgBG(!isImgBG);
+
+  // Displays a new quote by changing the index of the quote to preview
+  const handleNewQuote = () => {
+    setQuoteData({
+      quoteIndex: getRandomIndex(quoteData.quotes)
+    });
+  };
+
+  // Fetches a new image or sets a new color
+  const handleNewBackground = () => {
+    if (isImgBG) {
+      fetchImage();
+    } else {
+      setColor(getRandomColor());
+    }
+  };
+
+  // Adds a card to boardCards, including the quote text and background image or color.
+  const handleAddCard = () => {
+    if (boardCards && boardCards.length < BOARD_MAX_SIZE) {
+      let quote = quoteData.quotes[quoteData.quoteIndex];
+      let backgroundImg = isImgBG ? image.urls.small : null;
+      let backgroundColor = !isImgBG ? color : null;
+      let newQuoteList;
+      LAST_CARD_ID += 1;
+
+      if (backgroundImg) {
+        newQuoteList = boardCards.concat({ id: LAST_CARD_ID, quote: quote, backgroundImg: backgroundImg });
+      } else {
+        newQuoteList = boardCards.concat({ id: LAST_CARD_ID, quote: quote, backgroundColor: backgroundColor });
+      }
+
+      setBoardCards(newQuoteList);
+      console.log(boardCards);
+    }
+  };
+
+  // Deletes a card from the board by removing it from quoteList.
+  const handleDeleteCard = () => {
+    if (selectedCard != null) {
+      for (let i = 0; i < boardCards.length; i++) { // find the quote whose id == cardId
+        if (boardCards[i].id === selectedCard) {
+          boardCards.splice(i, 1);
+          break;
+        }
+      }
+      setBoardCards(boardCards);
+    } else {
+      console.log("No card selected");
+    }
+  };
+
+  // Empties contents of boardCards
+  const handleClearBoard = () => setBoardCards([]);
+
+  // fetch all quotes on page load
   useEffect(() => {
-    console.log("here");
     setLoading(true);
-    setTimeout(() => {
+    setTimeout(() => { // TODO: remove timeout
       fetch("https://type.fit/api/quotes")
         .then((res) => res.json())
         .then((res) => setQuoteData({ quotes: res, quoteIndex: getRandomIndex(res) }))
@@ -115,16 +124,24 @@ function App() {
     }, "2000");
   }, []);
 
+  // fetch an image on page load
   useEffect(() => {
-    fetchImage(setImage);
-  }, [])
+    setLoading(true);
+    fetchImage();
+  }, []);
+
+  // get a background color on page load
+  useEffect(() => {
+    setColor(getRandomColor());
+  }, []);
 
   if (error) {
     return <pre>{JSON.stringify(error)}</pre>;
   }
 
   return (
-    <div className="App" onClick={() => setSelected(null)}>
+    <div className="App" onClick={() => setSelectedCard(null)}>
+
       {/* ----- HEADER ----- */}
       <header className="App-header">
         <p>Mood Board Generator</p>
@@ -132,40 +149,103 @@ function App() {
 
       {/* ----- MAIN CONTENT ----- */}
       <div className="Main-content">
+
+        {/* ----- Left Column: Preview and Controls ----- */}
         <div className="Flex-section">
-          {/* ----- Single Quote Block ----- */}
+
+          {/* ----- Current Card Preview ----- */}
           <div className="Quote-current">
-            {loading ? <p>Loading...</p> : <QuoteBlock
+            {loading ? <p>Loading...</p> : <Card
               quote={quoteData.quotes ? quoteData.quotes[quoteData.quoteIndex] : null}
-              imageUrl={imgAsBackground && image ? image.urls.small : null}
-              color={!imgAsBackground ? color : null} />}
+              imageUrl={isImgBG && image ? image.urls.small : null}
+              color={!isImgBG ? color : null}
+            />}
           </div>
 
-          {/* ----- Controls ----- */}
-
+          {/* ----- Switch ----- */}
           <label className="Switch">
-            <span className={"Switch-label Left " + (!imgAsBackground ? "Checked" : "")}>Color</span>
-            <input type="checkbox" checked={imgAsBackground} onChange={() => setImgAsBackground(!imgAsBackground)} />
+            <span
+              className={"Switch-label Left" + (!isImgBG ? " Checked" : "")}
+            >
+              Color
+            </span>
+
+            <input
+              type="checkbox"
+              checked={isImgBG}
+              onChange={handleBackgroundType}
+            />
+
             <span className="Slider"></span>
-            <span className={"Switch-label Right "  + (imgAsBackground ? "Checked" : "")}>Image</span>
+
+            <span
+              className={"Switch-label Right" + (isImgBG ? " Checked" : "")}
+            >
+              Image
+            </span>
           </label>
 
+          {/* ----- Button Row 1 ----- */}
           <div>
-            <button className="Button" onClick={() => { setQuoteData({ quoteIndex: getRandomIndex(quoteData.quotes) }) }}>New quote</button>
-            <button className="Button" onClick={() => imgAsBackground ? fetchImage(setImage) : setColor(getRandomColor())}>New {imgAsBackground ? "image" : "color"}</button>
+            <button
+              className="Button"
+              onClick={handleNewQuote}
+            >
+              New quote
+            </button>
+
+            <button
+              className="Button"
+              onClick={handleNewBackground}
+            >
+              New {isImgBG ? "image" : "color"}
+            </button>
           </div>
 
+          {/* ----- Button Row 2 ----- */}
           <div>
-            <button className="Button" disabled={quoteList.length >= BOARD_MAX_SIZE} onClick={() => { addQuote(quoteData.quotes[quoteData.quoteIndex], imgAsBackground ? image.urls.small : null, !imgAsBackground ? color : null, quoteList, setQuoteList) }}>Add to board</button>
-            <button className="Button" disabled={quoteList.length === 0} onClick={() => setQuoteList([])}>Clear board</button>
-            <button className="Button" disabled={selected == null} onClick={() => deleteCard(selected, quoteList, setQuoteList)}>Delete</button>
-            <button className="Button" disabled={quoteList.length === 0} onClick={downloadScreenshot}>Download</button>
+            <button
+              className="Button"
+              disabled={boardCards.length >= BOARD_MAX_SIZE}
+              onClick={handleAddCard}
+            >
+              Add to board
+            </button>
+
+            <button
+              className="Button"
+              disabled={selectedCard == null}
+              onClick={handleDeleteCard}
+            >
+              Delete
+            </button>
+
+            <button
+              className="Button"
+              disabled={boardCards.length === 0}
+              onClick={handleClearBoard}
+            >
+              Clear board
+            </button>
+
+            <button
+              className="Button"
+              disabled={boardCards.length === 0}
+              onClick={downloadScreenshot}
+            >
+              Download
+            </button>
           </div>
         </div>
 
-        {/* ----- Mood Board ----- */}
+        {/* ----- Right Column: Mood Board Grid ----- */}
         <div className="Flex-section">
-          <Board quoteList={quoteList} setQuoteList={setQuoteList} selected={selected} setSelected={setSelected} />
+          <Board
+            cardList={boardCards}
+            setCardList={setBoardCards}
+            selected={selectedCard}
+            setSelected={setSelectedCard}
+          />
         </div>
       </div>
 

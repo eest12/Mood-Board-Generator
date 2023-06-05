@@ -5,15 +5,19 @@ import { GridContextProvider, GridDropZone, GridItem, swap } from "react-grid-dn
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 
-const canvasRef = createRef(null);
+const BOARD_MAX_SIZE = 9; // total amount of cards a board can hold
+const canvasRef = createRef(null); // a reference to the element to be turned into a canvas
 
-// Downloads a screenshot of the current canvas
+/**
+ * Downloads a screenshot of the current board as a jpg.
+ */
 function downloadScreenshot() {
-    html2canvas(canvasRef.current, { logging: true, letterRendering: 1, useCORS: true }).then(canvas => {
-        canvas.toBlob(function (blob) {
-            window.saveAs(blob, 'mood-board.jpg');
+    html2canvas(canvasRef.current, { logging: true, letterRendering: 1, useCORS: true })
+        .then(canvas => {
+            canvas.toBlob(function (blob) {
+                saveAs(blob, 'mood-board.jpg');
+            });
         });
-    });
 }
 
 /**
@@ -21,27 +25,33 @@ function downloadScreenshot() {
  * @param {*} param0 
  * @returns 
  */
-function Board({ quoteList, setQuoteList, selected, setSelected }) {
-    // TODO: maybe "quoteList" and "selected" states should be declared here?
-
-    function onChange(sourceId, sourceIndex, targetIndex, targetId) {
-        const nextState = swap(quoteList, sourceIndex, targetIndex);
-        setQuoteList(nextState);
+function Board({ cardList, setCardList, selected, setSelected }) {
+    // Moves grid item to a new position and shifts other cards to accomodate it
+    const handleGridChange = (sourceId, sourceIndex, targetIndex, targetId) => {
+        const reorderedList = swap(cardList, sourceIndex, targetIndex);
+        setCardList(reorderedList);
     }
 
-    if (quoteList && quoteList.length > 0) {
+    if (cardList && cardList.length > 0) {
         return (
             <div className="Board" ref={canvasRef}>
-                <GridContextProvider onChange={onChange}>
+                <GridContextProvider onChange={handleGridChange}>
                     <GridDropZone
                         id="quoteList"
                         boxesPerRow={3}
                         rowHeight={184} // height/rows = 552/3 = 184
                         className="Grid"
                     >
-                        {quoteList.map((item) => (
+                        {cardList.map((item) => (
                             <GridItem key={item.id}>
-                                <BoardSlot id={item.id} quote={item.quote} image={item.backgroundImg} color={item.backgroundColor} selected={selected} setSelected={setSelected} />
+                                <BoardSlot
+                                    id={item.id}
+                                    quote={item.quote}
+                                    image={item.backgroundImg}
+                                    color={item.backgroundColor}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                />
                             </GridItem>
                         ))}
                     </GridDropZone>
@@ -57,4 +67,4 @@ function Board({ quoteList, setQuoteList, selected, setSelected }) {
     }
 }
 
-export { Board, downloadScreenshot };
+export { Board, BOARD_MAX_SIZE, downloadScreenshot };
