@@ -6,14 +6,14 @@ This is a React web app to create a mood board consisting of quotes by famous fi
 
 ## Setup
 
-An Unsplash API Access Key is required. In the future, this key will be hidden with Netlify functions, but for now the key is stored in an untracked `src/config.js` file:
+This app requires an Unsplash API access key, which is hidden in an untracked `.env` file at the root of the project and then retrieved on the server side with Netlify functions. The `.env` file contains the following:
 
-    export const unsplashKey = "your_access_key_here";
+    ACCESS_KEY=your_access_key_here;
 
 From the Mood-Board-Generator directory, run these commands to install the Node dependencies and launch the app:
 
     npm install
-    npm start
+    netlify dev
 
 ## Features
 

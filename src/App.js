@@ -1,5 +1,4 @@
 import './App.css';
-import { unsplashKey } from "./config";
 import { useEffect, useReducer, useState } from "react";
 import { Card } from "./components/Card/Card.js";
 import { Board, BOARD_MAX_SIZE, downloadScreenshot } from "./components/Board/Board.js";
@@ -22,20 +21,23 @@ function App() {
   const [isImgBG, setIsImgBG] = useState(true); // whether card background is an image (vs. solid color)
   const [boardCards, setBoardCards] = useState([]); // cards added to the board
   const [selectedCard, setSelectedCard] = useState(null); // card selected in the board by the user
+  const netlifyFuncPath = "/.netlify/functions/fetch-unsplash";
 
   // Requests an image from the Unsplash API
   const fetchImage = () => {
-    fetch(`https://api.unsplash.com/photos/random?client_id=${unsplashKey}`)
+    const apiImageId = "image";
+    fetch(`${netlifyFuncPath}?id=${apiImageId}`)
       .then((res) => res.json())
-      .then(setImage)
+      .then((res) => setImage(res["data"]))
       .catch((err) => setError(err));
   };
 
   // Triggers a download as required by the Unsplash API Guidelines.
   // Calls an event endpoint to increment the number of downloads a photo has.
   const unsplashDownload = () => {
-    fetch(`${image.links.download_location}?client_id=${unsplashKey}`)
-    .then((res) => console.log(res));
+    const apiDownloadId = "download";
+    fetch(`${netlifyFuncPath}?id=${apiDownloadId}&downloadLocation=${image.links.download_location}`)
+      .then((res) => console.log(res));
   }
 
   /**
