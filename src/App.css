@@ -14,8 +14,9 @@
 }
 
 .App-header {
-  min-height: 24vh;
-  font-size: calc(30px + 2vmin);
+  height: 100vh;
+  background-image: url("../public/wyxina-tresse-aqiahnQaooQ-unsplash-edit.jpg");
+  background-size: cover;
 }
 
 .App-header, .App-footer {
@@ -27,8 +28,18 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.Header-line:first-of-type {
+  color: #fff7da;
+  font-size: 10vh;
+  font-weight: 100;
+  line-height: 0;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px;
+}
+
+.Header-line:last-of-type {
+  color: #dfd1c2;
+  font-size: 5vh;
 }
 
 .Main-content {

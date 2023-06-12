@@ -153,7 +153,10 @@ function App() {
 
       {/* ----- HEADER ----- */}
       <header className="App-header">
-        <p>Mood Board Generator</p>
+        <p>
+          <span className="Header-line">MOOD BOARD</span><br />
+          <span className="Header-line">GENERATOR</span>
+        </p>
       </header>
 
       {/* ----- MAIN CONTENT ----- */}
