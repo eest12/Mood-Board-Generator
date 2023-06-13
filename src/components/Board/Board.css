@@ -1,10 +1,15 @@
+:root {
+    --height: 452px;
+    --width-ratio: 1.18;
+}
+
 .Board {
     padding: 15px;
     border: 4px solid #254651;
     border-radius: 8px;
     color: gray;
-    width: 650px;
-    height: 552px;
+    width: calc(var(--height) * var(--width-ratio));
+    height: var(--height);
 }
 
 .Grid {

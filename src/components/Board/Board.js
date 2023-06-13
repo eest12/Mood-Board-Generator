@@ -26,6 +26,10 @@ function downloadScreenshot() {
  * @returns 
  */
 function Board({ cardList, setCardList, selected, setSelected }) {
+    const boardHeight = parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--height")
+    );
+
     // Moves grid item to a new position and shifts other cards to accomodate it
     const handleGridChange = (sourceId, sourceIndex, targetIndex, targetId) => {
         const reorderedList = swap(cardList, sourceIndex, targetIndex);
@@ -39,7 +43,7 @@ function Board({ cardList, setCardList, selected, setSelected }) {
                     <GridDropZone
                         id="quoteList"
                         boxesPerRow={3}
-                        rowHeight={184} // height/rows = 552/3 = 184
+                        rowHeight={boardHeight / 3} // height/rows
                         className="Grid"
                     >
                         {cardList.map((item) => (
