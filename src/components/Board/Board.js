@@ -26,6 +26,12 @@ function downloadScreenshot() {
  * @returns 
  */
 function Board({ cardList, setCardList, selected, setSelected }) {
+    /* Note: The boardHeight variable is used to calculate and set the grid row height,
+       but if the CSS property --height is changed during development,
+       the grid row height won't be updated without refreshing the page manually.
+       For now this is not a problem because the Board size cannot be changed during production.
+       If in the future the Board size is made responsive and the --height property changes dynamically,
+       stateful variables will be needed to react to a window resize event. */
     const boardHeight = parseFloat(
         getComputedStyle(document.documentElement).getPropertyValue("--height")
     );

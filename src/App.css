@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  display: grid; /* so that header and footer extend to the width of the main content when it overflows */
 }
 
 .App-logo {
@@ -15,6 +16,7 @@
 
 .App-header {
   height: 100vh;
+  min-width: 100vw;
   background-image: url("../public/wyxina-tresse-aqiahnQaooQ-unsplash-edit.jpg");
   background-size: cover;
 }
@@ -30,7 +32,7 @@
 
 .Header-line:first-of-type {
   color: #fff7da;
-  font-size: 10vh;
+  font-size: 5vw;
   font-weight: 100;
   line-height: 0;
   -webkit-text-fill-color: transparent;
@@ -39,7 +41,7 @@
 
 .Header-line:last-of-type {
   color: #dfd1c2;
-  font-size: 5vh;
+  font-size: 2.5vw;
 }
 
 .Main-content {
@@ -175,5 +177,38 @@ input:checked + .Slider:before {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width:700px) {
+  .Header-line:first-of-type {
+    font-size: 8vw;
+  }
+  
+  .Header-line:last-of-type {
+    font-size: 4vw;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media screen and (max-width:1015px) {
+  .Main-content {
+    flex-direction: column;
+  }
+
+  .Flex-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media screen and (max-width:400px) {
+  .Header-line:first-of-type {
+    font-size: 11vw;
+  }
+  
+  .Header-line:last-of-type {
+    font-size: 5.5vw;
   }
 }
