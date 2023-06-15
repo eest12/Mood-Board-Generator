@@ -1,5 +1,6 @@
 import './App.css';
 import { useEffect, useReducer, useState } from "react";
+import tinycolor from "tinycolor2";
 import { Card } from "./components/Card/Card.js";
 import { Board, BOARD_MAX_SIZE, downloadScreenshot } from "./components/Board/Board.js";
 
@@ -10,18 +11,29 @@ let LAST_CARD_ID = 0; // increments when a card is added to the board
  * @returns App element, which contaings all the contents of the app.
  */
 function App() {
+  const ColorGroups = Object.freeze({
+    Any: "any",
+    Pastel: "pastel",
+    Bright: "bright",
+    Dull: "dull",
+    Gray: "gray"
+  });
+
+  const netlifyFuncPath = "/.netlify/functions/fetch-unsplash";
+
   const [quoteData, setQuoteData] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { quotes: null, quoteIndex: 0 }
   ); // set consisting of a list of all quotes and a quote index for the quote currently being previewed
+
   const [error, setError] = useState(null); // error message from any fetch call
   const [loading, setLoading] = useState(false); // whether data is being fetched
   const [image, setImage] = useState(null); // card background image
   const [color, setColor] = useState(null); // card background color
   const [isImgBG, setIsImgBG] = useState(true); // whether card background is an image (vs. solid color)
+  const [colorGroup, setColorGroup] = useState(ColorGroups.Any);
   const [boardCards, setBoardCards] = useState([]); // cards added to the board
   const [selectedCard, setSelectedCard] = useState(null); // card selected in the board by the user
-  const netlifyFuncPath = "/.netlify/functions/fetch-unsplash";
 
   // Requests an image from the Unsplash API
   const fetchImage = () => {
@@ -57,15 +69,43 @@ function App() {
  * @returns A string representing a color in RGB format.
  */
   const getRandomColor = () => {
-    const rgb = [];
-    for (let i = 0; i < 3; i++) {
-      rgb.push(Math.floor(Math.random() * 256));
+    const getRandomRgbInt = () => Math.floor(Math.random() * 256);
+    let colorObj;
+
+    switch (colorGroup) {
+      case ColorGroups.Any:
+        return `rgb(${getRandomRgbInt()}, ${getRandomRgbInt()}, ${getRandomRgbInt()})`;
+
+      case ColorGroups.Pastel:
+        colorObj = tinycolor({ r: getRandomRgbInt(), g: getRandomRgbInt(), b: getRandomRgbInt() });
+        colorObj.saturate(10);
+        colorObj = tinycolor.mix(colorObj, tinycolor("white"));
+        return colorObj.toRgbString();
+
+      case ColorGroups.Bright:
+        colorObj = tinycolor({ h: getRandomRgbInt(), s: 100, l: 50 });
+        return colorObj.toRgbString();
+
+      case ColorGroups.Dull:
+        colorObj = tinycolor({ r: getRandomRgbInt(), g: getRandomRgbInt(), b: getRandomRgbInt() });
+        colorObj = tinycolor.mix(colorObj, tinycolor("black")).desaturate(10);
+        return colorObj.toRgbString();
+
+      case ColorGroups.Gray:
+        let randomNum = getRandomRgbInt();
+        colorObj = tinycolor({ r: randomNum, g: randomNum, b: randomNum});
+        return colorObj.toRgbString();
+
+      default:
+        return "rgb(0, 0, 0)";
     }
-    return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
   };
 
   // Toggles between image and color type
   const handleBackgroundType = () => setIsImgBG(!isImgBG);
+
+  // Sets the color group to the one selected by the user
+  const handleColorGroup = (e) => setColorGroup(e.target.value);
 
   // Displays a new quote by changing the index of the quote to preview
   const handleNewQuote = () => {
@@ -174,7 +214,7 @@ function App() {
             />}
           </div>
 
-          {/* ----- Switch ----- */}
+          {/* ----- Color/Image Switch ----- */}
           <label className="Switch">
             <span
               className={"Switch-label Left" + (!isImgBG ? " Checked" : "")}
@@ -196,6 +236,20 @@ function App() {
               Image
             </span>
           </label>
+
+          {/* ----- Color Group Radio Buttons ----- */}
+          <div>
+            <input type="radio" id="any" name="color" value={ColorGroups.Any} checked={colorGroup == ColorGroups.Any} onChange={handleColorGroup} />
+            <label htmlFor="any">Any Color</label>
+            <input type="radio" id="pastel" name="color" value={ColorGroups.Pastel} checked={colorGroup == ColorGroups.Pastel} onChange={handleColorGroup} />
+            <label htmlFor="pastel">Pastel</label>
+            <input type="radio" id="bright" name="color" value={ColorGroups.Bright} checked={colorGroup == ColorGroups.Bright} onChange={handleColorGroup} />
+            <label htmlFor="bright">Bright</label>
+            <input type="radio" id="dull" name="color" value={ColorGroups.Dull} checked={colorGroup == ColorGroups.Dull} onChange={handleColorGroup} />
+            <label htmlFor="dull">Dull</label>
+            <input type="radio" id="gray" name="color" value={ColorGroups.Gray} checked={colorGroup == ColorGroups.Gray} onChange={handleColorGroup} />
+            <label htmlFor="gray">Gray</label>
+          </div>
 
           {/* ----- Button Row 1 ----- */}
           <div>
