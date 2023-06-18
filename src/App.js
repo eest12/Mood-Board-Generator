@@ -182,6 +182,11 @@ function App() {
   // get a background color on page load
   useEffect(() => {
     setColor(getRandomColor());
+
+    // The comment line at the end of this block disables this warning:
+    // "React Hook useEffect has a missing dependency: 'getRandomColor'."
+    
+    // eslint-disable-next-line
   }, []);
 
   if (error) {
