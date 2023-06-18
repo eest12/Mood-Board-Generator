@@ -217,37 +217,86 @@ function App() {
           {/* ----- Color/Image Switch ----- */}
           <label className="Switch">
             <span
-              className={"Switch-label Left" + (!isImgBG ? " Checked" : "")}
+              className={"Switch-label Left" + (isImgBG ? " Checked" : "")}
             >
-              Color
+              Image
             </span>
 
             <input
               type="checkbox"
-              checked={isImgBG}
+              checked={!isImgBG}
               onChange={handleBackgroundType}
             />
 
             <span className="Slider"></span>
 
             <span
-              className={"Switch-label Right" + (isImgBG ? " Checked" : "")}
+              className={"Switch-label Right" + (!isImgBG ? " Checked" : "")}
             >
-              Image
+              Color
             </span>
           </label>
 
           {/* ----- Color Group Radio Buttons ----- */}
-          <div>
-            <input type="radio" id="any" name="color" value={ColorGroups.Any} checked={colorGroup == ColorGroups.Any} onChange={handleColorGroup} />
+          <div className="Radio">
+            <input
+              type="radio"
+              id="any"
+              name="color"
+              value={ColorGroups.Any}
+              checked={colorGroup === ColorGroups.Any}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+
             <label htmlFor="any">Any Color</label>
-            <input type="radio" id="pastel" name="color" value={ColorGroups.Pastel} checked={colorGroup == ColorGroups.Pastel} onChange={handleColorGroup} />
+
+            <input
+              type="radio"
+              id="pastel"
+              name="color"
+              value={ColorGroups.Pastel}
+              checked={colorGroup === ColorGroups.Pastel}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+
             <label htmlFor="pastel">Pastel</label>
-            <input type="radio" id="bright" name="color" value={ColorGroups.Bright} checked={colorGroup == ColorGroups.Bright} onChange={handleColorGroup} />
+
+            <input
+              type="radio"
+              id="bright"
+              name="color"
+              value={ColorGroups.Bright}
+              checked={colorGroup === ColorGroups.Bright}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+
             <label htmlFor="bright">Bright</label>
-            <input type="radio" id="dull" name="color" value={ColorGroups.Dull} checked={colorGroup == ColorGroups.Dull} onChange={handleColorGroup} />
+
+            <input
+              type="radio"
+              id="dull"
+              name="color"
+              value={ColorGroups.Dull}
+              checked={colorGroup === ColorGroups.Dull}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+
             <label htmlFor="dull">Dull</label>
-            <input type="radio" id="gray" name="color" value={ColorGroups.Gray} checked={colorGroup == ColorGroups.Gray} onChange={handleColorGroup} />
+
+            <input
+              type="radio"
+              id="gray"
+              name="color"
+              value={ColorGroups.Gray}
+              checked={colorGroup === ColorGroups.Gray}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+            
             <label htmlFor="gray">Gray</label>
           </div>
 

@@ -129,8 +129,6 @@
   bottom: 0;
   border-radius: 5px;
   background-color: #2196F3;
-  -webkit-transition: .4s;
-  transition: .4s;
 }
 
 .Slider:before {
@@ -146,14 +144,61 @@
   transition: .4s;
 }
 
-input:focus + .Slider {
-  box-shadow: 0 0 1px #2196F3;
+input[type="checkbox"]:focus-visible + .Slider, :focus-visible {
+  outline: 0.15em solid rgb(64, 64, 64);
+  outline-offset: 0.15em;
 }
 
-input:checked + .Slider:before {
+input[type="checkbox"]:checked + .Slider:before {
   -webkit-transform: translateX(14px);
   -ms-transform: translateX(14px);
   transform: translateX(14px);
+}
+
+.Radio {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+input[type="radio"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff; /* For iOS < 15 to remove gradient background */
+  margin: 0 0.5em 0 1em;
+  width: 1.1em;
+  height: 1.1em;
+  border: 0.05em solid black;
+  border-radius: 10%;
+  transform: translateY(0.1em);
+}
+
+input[type="radio"]::before {
+  display: block;
+  content: "";
+  width: 0.7em;
+  height: 0.7em;
+  margin: 0.15em;
+  border-radius: 20%;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #2196F3;
+  /* background-color: black; */ /* Windows High Contrast Mode */
+}
+
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="radio"]:disabled {
+  border-color: rgb(177, 177, 177);
+}
+
+input[type="radio"]:disabled::before {
+  box-shadow: inset 1em 1em #bad1e4;
+}
+
+input[type="radio"]:disabled + label {
+  color: rgb(177, 177, 177);
 }
 
 .Center-parent {
