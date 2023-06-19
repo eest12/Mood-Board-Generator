@@ -16,7 +16,9 @@ function App() {
     Pastel: "pastel",
     Bright: "bright",
     Dull: "dull",
-    Gray: "gray"
+    Gray: "gray",
+    Warm: "warm",
+    Cool: "cool"
   });
 
   const netlifyFuncPath = "/.netlify/functions/fetch-unsplash";
@@ -69,31 +71,66 @@ function App() {
  * @returns A string representing a color in RGB format.
  */
   const getRandomColor = () => {
-    const getRandomRgbInt = () => Math.floor(Math.random() * 256);
+    const getRandomIntInRange = (min = 0, max = 256) => Math.floor(Math.random() * (max - min) + min);
     let colorObj;
 
     switch (colorGroup) {
       case ColorGroups.Any:
-        return `rgb(${getRandomRgbInt()}, ${getRandomRgbInt()}, ${getRandomRgbInt()})`;
+        return `rgb(${getRandomIntInRange()}, ${getRandomIntInRange()}, ${getRandomIntInRange()})`;
 
       case ColorGroups.Pastel:
-        colorObj = tinycolor({ r: getRandomRgbInt(), g: getRandomRgbInt(), b: getRandomRgbInt() });
+        colorObj = tinycolor({
+          r: getRandomIntInRange(),
+          g: getRandomIntInRange(),
+          b: getRandomIntInRange()
+        });
         colorObj.saturate(10);
         colorObj = tinycolor.mix(colorObj, tinycolor("white"));
         return colorObj.toRgbString();
 
       case ColorGroups.Bright:
-        colorObj = tinycolor({ h: getRandomRgbInt(), s: 100, l: 50 });
+        colorObj = tinycolor({ h:
+          getRandomIntInRange(0, 361),
+          s: 100,
+          l: 50
+        });
         return colorObj.toRgbString();
 
       case ColorGroups.Dull:
-        colorObj = tinycolor({ r: getRandomRgbInt(), g: getRandomRgbInt(), b: getRandomRgbInt() });
+        colorObj = tinycolor({
+          r: getRandomIntInRange(),
+          g: getRandomIntInRange(),
+          b: getRandomIntInRange()
+        });
         colorObj = tinycolor.mix(colorObj, tinycolor("black")).desaturate(10);
         return colorObj.toRgbString();
 
       case ColorGroups.Gray:
-        let randomNum = getRandomRgbInt();
-        colorObj = tinycolor({ r: randomNum, g: randomNum, b: randomNum});
+        const randomNum = getRandomIntInRange();
+        colorObj = tinycolor({
+          r: randomNum,
+          g: randomNum,
+          b: randomNum
+        });
+        return colorObj.toRgbString();
+
+      case ColorGroups.Warm:
+        // randomly select either hue range 0-89 or 271-360, both of which are warm
+        // (note: 90 and 270 are neither cool or warm)
+        const warmHue = getRandomIntInRange(0, 2) ? getRandomIntInRange(0, 90) : getRandomIntInRange(271, 361);
+        colorObj = tinycolor({
+          h: warmHue,
+          s: getRandomIntInRange(0, 101),
+          l: getRandomIntInRange(0, 101)
+        });
+        return colorObj.toRgbString();
+      
+      case ColorGroups.Cool:
+        colorObj = tinycolor({
+          h: getRandomIntInRange(91, 270),
+          s: getRandomIntInRange(0, 101),
+          l: getRandomIntInRange(0, 101)
+        });
         return colorObj.toRgbString();
 
       default:
@@ -303,6 +340,30 @@ function App() {
             />
             
             <label htmlFor="gray">Gray</label>
+
+            <input
+              type="radio"
+              id="warm"
+              name="color"
+              value={ColorGroups.Warm}
+              checked={colorGroup === ColorGroups.Warm}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+            
+            <label htmlFor="warm">Warm</label>
+
+            <input
+              type="radio"
+              id="cool"
+              name="color"
+              value={ColorGroups.Cool}
+              checked={colorGroup === ColorGroups.Cool}
+              onChange={handleColorGroup}
+              disabled={isImgBG}
+            />
+            
+            <label htmlFor="cool">Cool</label>
           </div>
 
           {/* ----- Button Row 1 ----- */}

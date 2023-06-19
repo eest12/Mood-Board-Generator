@@ -158,15 +158,16 @@ input[type="checkbox"]:checked + .Slider:before {
 .Radio {
   margin-top: 20px;
   margin-bottom: 10px;
+  font-size: 15px;
 }
 
 input[type="radio"] {
   -webkit-appearance: none;
   appearance: none;
   background-color: #fff; /* For iOS < 15 to remove gradient background */
-  margin: 0 0.5em 0 1em;
-  width: 1.1em;
-  height: 1.1em;
+  margin: 0 0.4em 0 1em;
+  width: 1em;
+  height: 1em;
   border: 0.05em solid black;
   border-radius: 10%;
   transform: translateY(0.1em);
@@ -175,8 +176,8 @@ input[type="radio"] {
 input[type="radio"]::before {
   display: block;
   content: "";
-  width: 0.7em;
-  height: 0.7em;
+  width: 0.6em;
+  height: 0.6em;
   margin: 0.15em;
   border-radius: 20%;
   transform: scale(0);
